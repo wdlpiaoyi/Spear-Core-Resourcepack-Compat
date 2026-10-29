@@ -1,0 +1,9 @@
+build/
+run/
+.gradle/
+.idea/
+.eclipse/
+out/
+*.iml
+local.properties
+logs/

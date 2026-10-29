@@ -1,0 +1,27 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+license = "MIT"
+issueTrackerURL = "https://github.com/wdlpiaoyi/Spear-Core/issues"
+
+[[mods]]
+modId = "spearcore"
+version = "3.2.0.1"
+displayName = "Spear Core (dev stub)"
+description = '''
+开发/GameTest 用的占位模组：只声明 modId，用来满足本模组对 Spear Core 的强制依赖。
+真正的联调请在正式客户端里装真实的 Spear Core（见 README）。
+'''
+
+[[dependencies.spearcore]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.spearcore]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,1.21)"
+ordering = "NONE"
+side = "BOTH"

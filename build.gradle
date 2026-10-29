@@ -1,0 +1,95 @@
+plugins {
+    id 'eclipse'
+    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
+}
+
+version = '0.1.0'
+group = 'net.wdlpiaoyi'
+archivesBaseName = 'spearcore-rpcompat-1.20.1-forge'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+minecraft {
+    mappings channel: 'official', version: '1.20.1'
+
+    runs {
+        client {
+        }
+
+        server {
+        }
+
+        gameTestServer {
+            // 判定以日志里的 "All N required tests passed :)" / "N required tests failed :(" 为准
+            jvmArgs '-Xmx2G'
+            property 'forge.enabledGameTestNamespaces', 'spearrpcompat'
+        }
+
+        configureEach {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                spearrpcompat {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.20.1-47.3.0'
+}
+
+// 把仓库里的测试结构拷进 run/，保证运行可复现
+tasks.register('stageGameTestStructures', Copy) {
+    from 'gameteststructures'
+    into 'run/gameteststructures'
+}
+
+// 注意：不能用 tasks.named('runGameTestServer')——ForgeGradle 在 minecraft{} 之后才创建这些 run 任务
+tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+    dependsOn 'stageGameTestStructures'
+}
+
+// 本模组把 Spear Core 声明成强制依赖，开发环境的 GameTest 也必须能加载到一个 modId=spearcore 的文件。
+// 不能直接把 Spear Core 的发布 jar 塞进 run/mods：那是 reobf 过的 SRG 产物，在 mojmap 的开发环境里
+// mixin 注入点（@Inject 的 SRG 目标名）全部找不到，启动即崩。所以这里编译一个只声明 modId 的占位 mod。
+// 真正的联调要在正式客户端（Prism 实例）里装真实的 Spear Core 做，见 README。
+def compileDevStub = tasks.register('compileDevStub', JavaCompile) {
+    group = 'minecraft'
+    description = '编译 run/mods 里那个占位 Spear Core 的类。'
+    source = fileTree('src/devstub/java')
+    classpath = sourceSets.main.compileClasspath
+    destinationDirectory = layout.buildDirectory.dir('devstub-classes')
+    options.encoding = 'UTF-8'
+}
+
+tasks.register('stageSpearCoreStub', Zip) {
+    group = 'minecraft'
+    description = '生成 run/mods/spearcore-devstub.jar，占位满足开发环境的强制依赖。'
+    dependsOn compileDevStub
+    // 如果已经手工放了真实的开发态 Spear Core（run/mods/spearcore-dev.jar），就别再塞占位 mod，
+    // 否则两个 modId=spearcore 的文件会互相冲突。
+    onlyIf { !layout.projectDirectory.file('run/mods/spearcore-dev.jar').asFile.exists() }
+    archiveFileName = 'spearcore-devstub.jar'
+    destinationDirectory = layout.projectDirectory.dir('run/mods')
+    from compileDevStub.flatMap { it.destinationDirectory }
+    from 'devstub'
+}
+
+tasks.matching { it.name in ['runClient', 'runServer', 'runGameTestServer'] }.configureEach {
+    dependsOn 'stageSpearCoreStub'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+// Forge 1.20.1 生产环境用 SRG 名（m_xxxxx_），开发/GameTest 用 Mojmap 名。
+// 少了重混淆，jar 在开发环境正常、进真实游戏就 NoSuchFieldError / NoSuchMethodError。
+tasks.named('jar') {
+    finalizedBy 'reobfJar'
+}

@@ -1,0 +1,37 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="MIT License"
+
+[[mods]]
+modId="spearrpcompat"
+version="0.1.0"
+displayName="Spear Core Resourcepack Compat"
+authors="wdlpiaoyi"
+description='''
+让 1.21.x 图标命名空间的长矛资源包（如 SpearsOverhaul）在 1.20.1 的 Spear Core 上生效。
+把含 min_format/max_format 的 pack.mcmeta 补成 pack_format 15，并把 minecraft 命名空间的 *_spear 贴图映射到 spearcore 命名空间。
+本模组只处理贴图，且把 Spear Core 作为硬依赖。
+'''
+displayTest="IGNORE_ALL_VERSION"
+
+[[dependencies.spearrpcompat]]
+    modId="forge"
+    mandatory=true
+    versionRange="[47,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.spearrpcompat]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20.1]"
+    ordering="AFTER"
+    side="BOTH"
+
+# 硬依赖：本模组存在的意义就是给 Spear Core 补资源包兼容，没装 SC 直接拒绝加载。
+[[dependencies.spearrpcompat]]
+    modId="spearcore"
+    mandatory=true
+    versionRange="[3.0.0,)"
+    ordering="AFTER"
+    side="BOTH"
