@@ -1,5 +1,7 @@
 # Spear Core Resourcepack Compat
 
+[![](https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness)
+
 > 简体中文（默认） ｜ [English](README.en.md)
 
 让 **1.21.9+ 的高版本长矛资源包** 能在 1.20.1 的 **Spear Core** 上用起来的小补丁模组。
@@ -62,6 +64,3 @@
 
 MIT，见 [LICENSE](LICENSE)。
 
----
-
-[![](https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness)

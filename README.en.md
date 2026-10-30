@@ -1,5 +1,7 @@
 # Spear Core Resourcepack Compat
 
+[![](https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness)
+
 > English ｜ [简体中文](README.md)
 
 A small patch mod that makes **resource packs built for Minecraft 1.21.9+ spears** usable with **Spear Core** on 1.20.1.
@@ -62,6 +64,3 @@ What this mod does: scan `resourcepacks/`, pick out packs that contain **vanilla
 
 MIT, see [LICENSE](LICENSE).
 
----
-
-[![](https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness)
